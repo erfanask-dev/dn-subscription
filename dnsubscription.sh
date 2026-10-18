@@ -329,8 +329,8 @@ install_app() {
     log_success "Installation complete!"
     log_info "Files installed in: ${APP_DIR}"
     log_info "Next steps:"
-    log_info "  1. Add SSL certificates to ${APP_DIR}/certs/"
-    log_info "  2. Run: dnsubscription up"
+    log_info "Run: dnsubscription up"
+    cmd_up
 }
 
 install_script() {
