@@ -297,7 +297,7 @@ configure_haproxy() {
             gsub(/<DASH_TARGET_IP>:<DASH_TARGET_PORT>/, "127.0.0.1:" dash_port)
             gsub(/<PANEL_TARGET_IP>:<PANEL_TARGET_PORT>/, "127.0.0.1:" panel_port)
             gsub(/<DEFAULT_TARGET_IP>:<DEFAULT_TARGET_PORT>/, "127.0.0.1:" default_port)
-            gsub(/<CHANGE_THIS_PASSWORD>/, monitor_pass)
+            gsub(/stats auth admin:<CHANGE_THIS_PASSWORD>/, "stats auth admin:"  monitor_pass)
             print
         }' "${haproxy_cfg}" > "${haproxy_cfg}.tmp" && mv "${haproxy_cfg}.tmp" "${haproxy_cfg}"
 
