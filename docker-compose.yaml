@@ -4,15 +4,8 @@ services:
   haproxy:
     image: haproxy:3.0-alpine
     container_name: haproxy
-    ports:
-      - "443:443"
-      - "2096:2096"
+    network_mode: host
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./certs:/usr/local/etc/haproxy/certs:ro
     restart: unless-stopped
-    networks:
-      - proxy-network
-
-networks:
-  proxy-network:
-    driver: bridge
