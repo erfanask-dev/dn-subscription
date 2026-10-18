@@ -182,6 +182,20 @@ install_docker() {
     log_success "Docker installed and started"
 }
 
+set_docker_mirror() {
+    log_info "Setting up Docker mirror..."
+
+    mkdir -p /etc/docker
+    cat > /etc/docker/daemon.json <<'EOF'
+{
+    "insecure-registries": ["docker.arvancloud.ir"],
+    "registry-mirrors": ["https://docker.arvancloud.ir"]
+}
+EOF
+
+    log_success "Docker mirror configured"
+}
+
 ensure_docker() {
     if check_docker; then
         return 0
@@ -318,12 +332,7 @@ install_app() {
 
     download_file "${REPO_RAW_URL}/docker-compose.yaml" "${APP_DIR}/docker-compose.yaml"
     download_file "${REPO_RAW_URL}/haproxy.cfg" "${APP_DIR}/haproxy.cfg"
-
-    # Create certs directory
-    mkdir -p "${APP_DIR}/certs"
-    log_info "Created certs directory: ${APP_DIR}/certs"
-    log_warn "Place your SSL certificates (.pem files) in ${APP_DIR}/certs/"
-
+    
     configure_haproxy
 
     log_success "Installation complete!"
