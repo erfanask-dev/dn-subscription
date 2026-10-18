@@ -174,9 +174,11 @@ install_docker() {
         pacman)
             install_package docker
             install_package docker-compose
-            systemctl enable --now docker
             ;;
     esac
+
+    # Configure Docker mirror (for Iran/ArvanCloud)
+    set_docker_mirror
 
     systemctl enable --now docker 2>/dev/null || true
     log_success "Docker installed and started"
@@ -193,7 +195,9 @@ set_docker_mirror() {
 }
 EOF
 
-    log_success "Docker mirror configured"
+    log_success "Docker mirror configured, restarting Docker service"
+    systemctl restart docker.service
+    log_success "Docker service restarted."
 }
 
 ensure_docker() {
