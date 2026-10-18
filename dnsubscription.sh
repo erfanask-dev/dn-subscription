@@ -270,13 +270,18 @@ configure_haproxy() {
     default_port=$(prompt_port "default server" "80")
     monitor_pass=$(prompt_password)
 
-    # Replace placeholders in haproxy.cfg
-    sed -i \
-        -e "s|<DASH_TARGET_IP>:<DASH_TARGET_PORT>|127.0.0.1:${dash_port}|g" \
-        -e "s|<PANEL_TARGET_IP>:<PANEL_TARGET_PORT>|127.0.0.1:${panel_port}|g" \
-        -e "s|<DEFAULT_TARGET_IP>:<DEFAULT_TARGET_PORT>|127.0.0.1:${default_port}|g" \
-        -e "s|<CHANGE_THIS_PASSWORD>|${monitor_pass}|g" \
-        "${haproxy_cfg}"
+    # Use awk for safe replacement (handles special chars in password)
+    awk -v dash_port="${dash_port}" \
+        -v panel_port="${panel_port}" \
+        -v default_port="${default_port}" \
+        -v monitor_pass="${monitor_pass}" \
+        '{
+            gsub(/<DASH_TARGET_IP>:<DASH_TARGET_PORT>/, "127.0.0.1:" dash_port)
+            gsub(/<PANEL_TARGET_IP>:<PANEL_TARGET_PORT>/, "127.0.0.1:" panel_port)
+            gsub(/<DEFAULT_TARGET_IP>:<DEFAULT_TARGET_PORT>/, "127.0.0.1:" default_port)
+            gsub(/<CHANGE_THIS_PASSWORD>/, monitor_pass)
+            print
+        }' "${haproxy_cfg}" > "${haproxy_cfg}.tmp" && mv "${haproxy_cfg}.tmp" "${haproxy_cfg}"
 
     log_success "HAProxy configured with:"
     log_info "  dash.subdigital.network -> 127.0.0.1:${dash_port}"
