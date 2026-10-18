@@ -316,6 +316,7 @@ install_app() {
     get_package_manager
     update_package_cache
     ensure_docker
+    set_docker_mirror
 
     if check_app_dir; then
         log_warn "Directory ${APP_DIR} already exists"
@@ -332,7 +333,7 @@ install_app() {
 
     download_file "${REPO_RAW_URL}/docker-compose.yaml" "${APP_DIR}/docker-compose.yaml"
     download_file "${REPO_RAW_URL}/haproxy.cfg" "${APP_DIR}/haproxy.cfg"
-    
+
     configure_haproxy
 
     log_success "Installation complete!"
